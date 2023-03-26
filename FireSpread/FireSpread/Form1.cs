@@ -170,8 +170,6 @@ namespace FireSpread
                     c.state = STATE.BURNING;
                     burningCells.Add(c);
                 }
-
-                Debug.WriteLine(burningCells.Count);
             }
 
             burning = true;
@@ -187,8 +185,6 @@ namespace FireSpread
                 burningCells.Remove(c);
 
                 Cell[] adjecent = AdjecentCells(c.p);
-                if (adjecent.Length > 1)
-                    Debug.WriteLine(adjecent.Length);
 
                 if (adjecent.Length > 0)
                     foundCell = true;
