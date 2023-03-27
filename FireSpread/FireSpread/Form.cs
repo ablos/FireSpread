@@ -16,6 +16,7 @@ namespace FireSpread
         bool randomFire = false;
         PlotModel model;
         string path;
+        Bitmap waterbody = new Bitmap(500, 250);
 
         public Form()
         {
@@ -33,7 +34,7 @@ namespace FireSpread
 
             plotView.Model = model;
 
-            ResetForest();
+            //ResetForest();
         }
 
         private void LoadWaterBodies()
@@ -48,7 +49,7 @@ namespace FireSpread
 
         private void ResetForest()
         {
-            f = new Forest(fireBox.Width, fireBox.Height, (int)burstChanceBox.Value, (int)treeChanceBox.Value, randomFire, debugColor);
+            f = new Forest(fireBox.Width, fireBox.Height, (int)burstChanceBox.Value, (int)treeChanceBox.Value, waterbody, randomFire, debugColor);
             fireBox.Image = f.ToImage();
         }
 
@@ -152,7 +153,21 @@ namespace FireSpread
 
         private void waterBodyDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("Changed");
+            if (waterBodyDropdown.SelectedItem == "None")
+            {
+                for (int x = 0; x < waterbody.Width; x++)
+                {
+                    for (int y = 0; y < waterbody.Height; y++)
+                    {
+                        waterbody.SetPixel(x, y, Color.Black);
+                    }
+                }
+            }else
+            {
+                waterbody = new Bitmap(path + "\\" + waterBodyDropdown.SelectedItem);
+            }
+
+            ResetForest();
         }
     }
 
@@ -168,7 +183,7 @@ namespace FireSpread
         private int burstChance;
         private bool randomFire;
 
-        public Forest(int width, int height, int burstChance, int treeChance, bool randomFire, bool debugColor)
+        public Forest(int width, int height, int burstChance, int treeChance, Bitmap waterbody, bool randomFire, bool debugColor)
         {
             this.width = width;
             this.height = height;
@@ -183,6 +198,12 @@ namespace FireSpread
             {
                 for (int y = 0; y < height; y++)
                 {
+                    if (waterbody.GetPixel(x, y) == Color.FromArgb(255, 255, 255, 255))
+                    {
+                        cells[x, y] = new Cell(new Point(x, y), STATE.WATER, debugColor);
+                        continue;
+                    }
+
                     cells[x, y] = new Cell(new Point(x, y), r.Next(1, 100) < treeChance ? STATE.TREE : STATE.EMPTY, debugColor);
                 }
             }
@@ -275,7 +296,7 @@ namespace FireSpread
                     return cells[point.X, point.Y];
                     
 
-                if (cells[point.X, point.Y].state != STATE.EMPTY)
+                if (cells[point.X, point.Y].state != STATE.EMPTY && cells[point.X, point.Y].state != STATE.WATER)
                     return null;
             }
 
@@ -306,7 +327,7 @@ namespace FireSpread
         }
     }
 
-    public enum STATE { EMPTY, TREE, BURNING, SMOLDERED };
+    public enum STATE { EMPTY, TREE, BURNING, SMOLDERED, WATER };
     public class Cell
     {
         public Point p = new Point();
@@ -332,6 +353,8 @@ namespace FireSpread
                     return Color.Red;
                 case STATE.SMOLDERED:
                     return debugColor ? Color.Pink : Color.FromArgb(102, 51, 0);
+                case STATE.WATER:
+                    return Color.Blue;
                 default:
                     return Color.Purple;
             }

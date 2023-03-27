@@ -116,7 +116,7 @@
             this.treeChanceBox.Size = new System.Drawing.Size(75, 23);
             this.treeChanceBox.TabIndex = 7;
             this.treeChanceBox.Value = new decimal(new int[] {
-            50,
+            80,
             0,
             0,
             0});
@@ -128,7 +128,7 @@
             this.burstChanceBox.Size = new System.Drawing.Size(75, 23);
             this.burstChanceBox.TabIndex = 8;
             this.burstChanceBox.Value = new decimal(new int[] {
-            50,
+            5,
             0,
             0,
             0});
