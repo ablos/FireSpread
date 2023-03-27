@@ -2,23 +2,48 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
+using System.IO;
+using OxyPlot;
+using OxyPlot.Series;
 
 namespace FireSpread
 {
-    public partial class Form1 : Form
+    public partial class Form : System.Windows.Forms.Form
     {
         Forest f;
         bool paused = false;
-        bool debugColor = true;
+        bool debugColor = false;
         bool randomFire = false;
+        PlotModel model;
+        string path;
 
-        public Form1()
+        public Form()
         {
             InitializeComponent();
 
             Debug.WriteLine("W: " + fireBox.Width + " H: " + fireBox.Height);
 
+            waterBodyDropdown.Items.Add("None");
+            waterBodyDropdown.SelectedItem = "None";
+
+            LoadWaterBodies();
+
+            model = new PlotModel();
+            model.Series.Add(new LineSeries());
+
+            plotView.Model = model;
+
             ResetForest();
+        }
+
+        private void LoadWaterBodies()
+        {
+            path = Directory.GetCurrentDirectory() + "\\waterbodies";
+            string[] items = Directory.GetFiles(path);
+            foreach (string item in items )
+            {
+                waterBodyDropdown.Items.Add(Path.GetFileName(item));
+            }
         }
 
         private void ResetForest()
@@ -52,6 +77,8 @@ namespace FireSpread
             SetButtonState(pauseButton, false);
         }
 
+        int i = 0;
+
         private void SetBurningText(int amount)
         {
             if (InvokeRequired)
@@ -60,6 +87,11 @@ namespace FireSpread
                 catch { }
                 return;
             }
+
+            (model.Series[0] as LineSeries).Points.Add(new DataPoint(i, amount));
+            model.InvalidatePlot(true);
+            i++;
+            plotView.Update();
 
             burningLabel.Text = amount.ToString();
             burningLabel.Update();
@@ -93,6 +125,9 @@ namespace FireSpread
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            i = 0;
+            (model.Series[0] as LineSeries).Points.Clear();
+
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
@@ -114,6 +149,11 @@ namespace FireSpread
             pauseButton.Text = "Pause";
             SetBurningText(0);
         }
+
+        private void waterBodyDropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Changed");
+        }
     }
 
     public class Forest
@@ -126,7 +166,6 @@ namespace FireSpread
         private int width;
         private int height;
         private int burstChance;
-        private bool debugColor;
         private bool randomFire;
 
         public Forest(int width, int height, int burstChance, int treeChance, bool randomFire, bool debugColor)
@@ -135,7 +174,6 @@ namespace FireSpread
             this.height = height;
             this.burstChance = burstChance;
             this.randomFire = randomFire;
-            this.debugColor = debugColor;
 
             cells = new Cell[width, height];
 
@@ -167,6 +205,10 @@ namespace FireSpread
                 for (int y = 0; y < height; y++)
                 {
                     Cell c = cells[0, y];
+
+                    if (c.state != STATE.TREE)
+                        continue;
+
                     c.state = STATE.BURNING;
                     burningCells.Add(c);
                 }

@@ -1,6 +1,6 @@
 ﻿namespace FireSpread
 {
-    partial class Form1
+    partial class Form
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form));
             this.fireBox = new System.Windows.Forms.PictureBox();
             this.startButton = new System.Windows.Forms.Button();
             this.pauseButton = new System.Windows.Forms.Button();
@@ -38,9 +39,16 @@
             this.burstChanceBox = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.plotView = new OxyPlot.WindowsForms.PlotView();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.waterBodyDropdown = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.fireBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.treeChanceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.burstChanceBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // fireBox
@@ -143,11 +151,67 @@
             this.label3.TabIndex = 10;
             this.label3.Text = "Burst Chance:";
             // 
-            // Form1
+            // plotView
+            // 
+            this.plotView.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.plotView.Location = new System.Drawing.Point(622, 12);
+            this.plotView.Name = "plotView";
+            this.plotView.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotView.Size = new System.Drawing.Size(624, 433);
+            this.plotView.TabIndex = 11;
+            this.plotView.Text = "plotView";
+            this.plotView.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotView.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotView.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(622, 443);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(624, 13);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 12;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(604, 12);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(16, 425);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 13;
+            this.pictureBox2.TabStop = false;
+            // 
+            // waterBodyDropdown
+            // 
+            this.waterBodyDropdown.FormattingEnabled = true;
+            this.waterBodyDropdown.Location = new System.Drawing.Point(12, 315);
+            this.waterBodyDropdown.Name = "waterBodyDropdown";
+            this.waterBodyDropdown.Size = new System.Drawing.Size(199, 23);
+            this.waterBodyDropdown.TabIndex = 14;
+            this.waterBodyDropdown.SelectedIndexChanged += new System.EventHandler(this.waterBodyDropdown_SelectedIndexChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 297);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(98, 15);
+            this.label4.TabIndex = 15;
+            this.label4.Text = "Water Body Type:";
+            // 
+            // Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(896, 381);
+            this.ClientSize = new System.Drawing.Size(1258, 468);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.waterBodyDropdown);
+            this.Controls.Add(this.pictureBox2);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.plotView);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.burstChanceBox);
@@ -158,12 +222,15 @@
             this.Controls.Add(this.pauseButton);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.fireBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "Form";
+            this.Text = "Forest Fire Simulation";
             ((System.ComponentModel.ISupportInitialize)(this.fireBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.treeChanceBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.burstChanceBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -181,5 +248,10 @@
         private NumericUpDown burstChanceBox;
         private Label label2;
         private Label label3;
+        private OxyPlot.WindowsForms.PlotView plotView;
+        private PictureBox pictureBox1;
+        private PictureBox pictureBox2;
+        private ComboBox waterBodyDropdown;
+        private Label label4;
     }
 }
