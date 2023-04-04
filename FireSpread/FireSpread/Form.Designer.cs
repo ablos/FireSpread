@@ -44,6 +44,12 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.waterBodyDropdown = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.showVisualBox = new System.Windows.Forms.CheckBox();
+            this.showGraphBox = new System.Windows.Forms.CheckBox();
+            this.showCountBox = new System.Windows.Forms.CheckBox();
+            this.outputFileBox = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.tickLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.fireBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.treeChanceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.burstChanceBox)).BeginInit();
@@ -187,7 +193,7 @@
             // waterBodyDropdown
             // 
             this.waterBodyDropdown.FormattingEnabled = true;
-            this.waterBodyDropdown.Location = new System.Drawing.Point(12, 315);
+            this.waterBodyDropdown.Location = new System.Drawing.Point(12, 326);
             this.waterBodyDropdown.Name = "waterBodyDropdown";
             this.waterBodyDropdown.Size = new System.Drawing.Size(199, 23);
             this.waterBodyDropdown.TabIndex = 14;
@@ -196,17 +202,89 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 297);
+            this.label4.Location = new System.Drawing.Point(12, 308);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(98, 15);
             this.label4.TabIndex = 15;
             this.label4.Text = "Water Body Type:";
+            // 
+            // showVisualBox
+            // 
+            this.showVisualBox.AutoSize = true;
+            this.showVisualBox.Checked = true;
+            this.showVisualBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showVisualBox.Location = new System.Drawing.Point(12, 352);
+            this.showVisualBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.showVisualBox.Name = "showVisualBox";
+            this.showVisualBox.Size = new System.Drawing.Size(139, 19);
+            this.showVisualBox.TabIndex = 16;
+            this.showVisualBox.Text = "Show real-time visual";
+            this.showVisualBox.UseVisualStyleBackColor = true;
+            // 
+            // showGraphBox
+            // 
+            this.showGraphBox.AutoSize = true;
+            this.showGraphBox.Checked = true;
+            this.showGraphBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showGraphBox.Location = new System.Drawing.Point(12, 400);
+            this.showGraphBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.showGraphBox.Name = "showGraphBox";
+            this.showGraphBox.Size = new System.Drawing.Size(140, 19);
+            this.showGraphBox.TabIndex = 17;
+            this.showGraphBox.Text = "Show real-time graph";
+            this.showGraphBox.UseVisualStyleBackColor = true;
+            // 
+            // showCountBox
+            // 
+            this.showCountBox.AutoSize = true;
+            this.showCountBox.Checked = true;
+            this.showCountBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showCountBox.Location = new System.Drawing.Point(12, 376);
+            this.showCountBox.Name = "showCountBox";
+            this.showCountBox.Size = new System.Drawing.Size(140, 19);
+            this.showCountBox.TabIndex = 18;
+            this.showCountBox.Text = "Show real-time count";
+            this.showCountBox.UseVisualStyleBackColor = true;
+            // 
+            // outputFileBox
+            // 
+            this.outputFileBox.AutoSize = true;
+            this.outputFileBox.Location = new System.Drawing.Point(12, 437);
+            this.outputFileBox.Name = "outputFileBox";
+            this.outputFileBox.Size = new System.Drawing.Size(97, 19);
+            this.outputFileBox.TabIndex = 19;
+            this.outputFileBox.Text = "Output to file";
+            this.outputFileBox.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 280);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(31, 15);
+            this.label5.TabIndex = 20;
+            this.label5.Text = "Tick:";
+            // 
+            // tickLabel
+            // 
+            this.tickLabel.AutoSize = true;
+            this.tickLabel.Location = new System.Drawing.Point(109, 280);
+            this.tickLabel.Name = "tickLabel";
+            this.tickLabel.Size = new System.Drawing.Size(13, 15);
+            this.tickLabel.TabIndex = 21;
+            this.tickLabel.Text = "0";
             // 
             // Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1258, 468);
+            this.Controls.Add(this.tickLabel);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.outputFileBox);
+            this.Controls.Add(this.showCountBox);
+            this.Controls.Add(this.showGraphBox);
+            this.Controls.Add(this.showVisualBox);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.waterBodyDropdown);
             this.Controls.Add(this.pictureBox2);
@@ -253,5 +331,11 @@
         private PictureBox pictureBox2;
         private ComboBox waterBodyDropdown;
         private Label label4;
+        private CheckBox showVisualBox;
+        private CheckBox showGraphBox;
+        private CheckBox showCountBox;
+        private CheckBox outputFileBox;
+        private Label label5;
+        private Label tickLabel;
     }
 }

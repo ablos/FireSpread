@@ -15,12 +15,16 @@ namespace FireSpread
         bool debugColor = false;
         bool randomFire = false;
         PlotModel model;
-        string path;
+        string waterbodyPath;
+        string currentWaterbody;
         Bitmap waterbody = new Bitmap(500, 250);
 
         public Form()
         {
             InitializeComponent();
+
+            fireBox.Width = 500;
+            fireBox.Height = 250;
 
             Debug.WriteLine("W: " + fireBox.Width + " H: " + fireBox.Height);
 
@@ -33,17 +37,19 @@ namespace FireSpread
             model.Series.Add(new LineSeries());
 
             plotView.Model = model;
-
-            //ResetForest();
         }
 
         private void LoadWaterBodies()
         {
-            path = Directory.GetCurrentDirectory() + "\\waterbodies";
-            string[] items = Directory.GetFiles(path);
+            waterbodyPath = Directory.GetCurrentDirectory() + "\\waterbodies";
+            string[] items = Directory.GetFiles(waterbodyPath);
             foreach (string item in items )
             {
-                waterBodyDropdown.Items.Add(Path.GetFileName(item));
+                string filename = Path.GetFileName(item);
+                if (filename.EndsWith(".png"))
+                    filename = filename.Substring(0, filename.LastIndexOf(".png"));
+
+                waterBodyDropdown.Items.Add(filename);
             }
         }
 
@@ -69,33 +75,157 @@ namespace FireSpread
                     continue;
 
                 f.Burn();
-                UpdateImage(f.ToImage());
-                SetBurningText(f.burningCells.Count);
+
+                AddDatapoint(f.burningCells.Count);
+
+                if (showGraphBox.Checked)
+                    UpdatePlot();
+
+                if (showVisualBox.Checked)
+                    UpdateImage(f.ToImage());
+
+                if (showCountBox.Checked)
+                {
+                    SetLabelText(burningLabel, f.burningCells.Count);
+                    SetLabelText(tickLabel, tickIndex);
+                }
             }
 
-            SetButtonState(startButton, true);
+            AddDatapoint(0);
+
+            UpdateImage(f.ToImage());
+            SetLabelText(burningLabel, f.burningCells.Count);
+            SetLabelText(tickLabel, tickIndex);
+            UpdatePlot();
+
+            if (outputFileBox.Checked)
+                WriteDataToFile(currentWaterbody, GetDataFromGraph());
+
             SetButtonState(resetButton, true);
             SetButtonState(pauseButton, false);
         }
 
-        int i = 0;
+        private void WriteDataToFile(string filename, int[] data)
+        {
+            if (data == null || data.Length <= 0) return;
 
-        private void SetBurningText(int amount)
+            filename += ".txt";
+
+            Debug.WriteLine("Writing results to: " + filename);
+
+            string path = Directory.GetCurrentDirectory() + "\\results";
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            path += "\\" + filename;
+
+            if (File.Exists(path))
+            {
+                string[] lines = File.ReadAllLines(path);
+
+                if (lines.Length <= 0) return;
+
+                List<string[]> series = new List<string[]>();
+
+                foreach (string line in lines)
+                {
+                    series.Add(line.Split(','));
+                }
+
+                Debug.WriteLine("------");
+                Debug.WriteLine(series[0].Length);
+                Debug.WriteLine(data.Length);
+                Debug.WriteLine("------");
+
+                if (data.Length > series[0].Length)
+                {
+                    Debug.WriteLine("Adding to series: " + (data.Length - series[0].Length));
+                    for (int x = 0; x < series.Count; x++)
+                    {
+                        for (int i = 0; i < data.Length - series[0].Length; i++)
+                        {
+                            lines[x] += ",0";
+                        }
+                    }
+
+                    File.WriteAllLines(path, lines);
+                }
+                else if (series[0].Length > data.Length)
+                {
+                    Debug.WriteLine("Adding to data: " + (series[0].Length - data.Length));
+                    List<int> _data = data.ToList();
+
+                    for (int i = 0; i < series[0].Length - data.Length; i++)
+                    {
+                        _data.Add(0);
+                    }
+
+                    data = _data.ToArray();
+                }
+            }
+
+            string text = data[0].ToString();
+
+            for (int d = 1; d < data.Length; d++)
+            {
+                text += "," + data[d].ToString();
+            }
+
+            File.AppendAllText(path, text + Environment.NewLine);
+        }
+
+        int tickIndex = 0;
+
+        private void SetLabelText(Label label, int amount)
         {
             if (InvokeRequired)
             {
-                try { this.Invoke(new Action<int>(SetBurningText), new object[] { amount }); }
+                try { this.Invoke(new Action<Label, int>(SetLabelText), new object[] { label, amount }); }
                 catch { }
                 return;
             }
 
-            (model.Series[0] as LineSeries).Points.Add(new DataPoint(i, amount));
-            model.InvalidatePlot(true);
-            i++;
-            plotView.Update();
+            label.Text = amount.ToString();
+            label.Update();
+        }
 
-            burningLabel.Text = amount.ToString();
-            burningLabel.Update();
+        private void AddDatapoint(int amount)
+        {
+            if (InvokeRequired)
+            {
+                try { this.Invoke(new Action<int>(AddDatapoint), new object[] { amount }); }
+                catch { }
+                return;
+            }
+
+            (model.Series[0] as LineSeries).Points.Add(new DataPoint(tickIndex, amount));
+            tickIndex++;
+        }
+
+        private int[] GetDataFromGraph()
+        {
+            LineSeries ls = model.Series[0] as LineSeries;
+            int[] output = new int[ls.Points.Count];
+
+            foreach (DataPoint dp in ls.Points)
+            {
+                output[(int)dp.X] = (int)dp.Y;
+            }
+
+            return output;
+        }
+
+        private void UpdatePlot()
+        {
+            if (InvokeRequired)
+            {
+                try { this.Invoke(new Action(UpdatePlot), new object[] { }); }
+                catch { }
+                return;
+            }
+
+            model.InvalidatePlot(true);
+            plotView.Update();
         }
 
         private void UpdateImage(Bitmap img)
@@ -126,7 +256,7 @@ namespace FireSpread
 
         private void startButton_Click(object sender, EventArgs e)
         {
-            i = 0;
+            tickIndex = 0;
             (model.Series[0] as LineSeries).Points.Clear();
 
             new Thread(() =>
@@ -148,7 +278,9 @@ namespace FireSpread
             f.burning = false;
             ResetForest();
             pauseButton.Text = "Pause";
-            SetBurningText(0);
+            SetLabelText(burningLabel, 0);
+            SetLabelText(tickLabel, 0);
+            SetButtonState(startButton, true);
         }
 
         private void waterBodyDropdown_SelectedIndexChanged(object sender, EventArgs e)
@@ -164,10 +296,12 @@ namespace FireSpread
                 }
             }else
             {
-                waterbody = new Bitmap(path + "\\" + waterBodyDropdown.SelectedItem);
+                waterbody = new Bitmap(waterbodyPath + "\\" + waterBodyDropdown.SelectedItem + ".png");
             }
 
             ResetForest();
+
+            currentWaterbody = waterBodyDropdown.SelectedItem.ToString();
         }
     }
 
