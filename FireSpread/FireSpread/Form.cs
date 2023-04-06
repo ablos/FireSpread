@@ -23,6 +23,8 @@ namespace FireSpread
         {
             InitializeComponent();
 
+            AdjustRunsToDensityRange();
+
             fireBox.Width = 500;
             fireBox.Height = 250;
 
@@ -67,6 +69,86 @@ namespace FireSpread
             SetButtonState(resetButton, false);
             SetButtonState(pauseButton, true);
 
+            if (!runMultipleBox.Checked)
+            {
+                RunSimulation();
+                AddDatapoint(0);
+
+                if (outputFileBox.Checked)
+                    WriteDataToFile(currentWaterbody, GetDataFromGraph());
+            }
+            else
+            {
+                int totalRuns = (int)runsAmountBox.Value;
+                int runsPerDensity = int.Parse(runsPerDensityLabel.Text);
+                
+                int currentDensity = (int)treeRangeMinBox.Value;
+
+                int[] average = new int[0];
+
+                for (int i = 0; i < totalRuns / runsPerDensity; i++)
+                {
+                    Debug.WriteLine("Running " + currentDensity + "% density " + runsPerDensity + " times...");
+
+                    for (int x = 0; x < runsPerDensity; x++)
+                    {
+                        //Debug.WriteLine("Run " + x + " for density: " + currentDensity);
+
+                        f = new Forest(fireBox.Width, fireBox.Height, (int)burstChanceBox.Value, currentDensity, waterbody, randomFire, debugColor);
+
+                        tickIndex = 0;
+                        (model.Series[0] as LineSeries).Points.Clear();
+
+                        RunSimulation();
+
+                        int[] output = GetDataFromGraph();
+
+                        if (output.Length > average.Length)
+                        {
+                            //Debug.WriteLine("Output bigger, adjusting...");
+
+                            int[] temp = average;
+                            average = new int[output.Length];
+
+                            for (int y = 0; y < temp.Length; y++)
+                            {
+                                average[y] = temp[y];
+                            }
+                        }
+
+                        for (int y = 0; y < output.Length; y++)
+                        {
+                            average[y] += output[y];
+                        }
+                    }
+
+                    currentDensity++;
+
+                    Debug.WriteLine("Done. (" + (((float)i + 1f) / ((float)totalRuns / (float)runsPerDensity) * 100f) + "% completed)");
+                }
+
+                (model.Series[0] as LineSeries).Points.Clear();
+                for (int i = 0; i < average.Length; i++)
+                {
+                    average[i] /= totalRuns;
+                    AddDatapoint(average[i], i);
+                }
+
+                if (outputFileBox.Checked)
+                    WriteDataToFile(currentWaterbody + "_average_" + totalRuns + "x_" + (int)treeRangeMinBox.Value + "-" + (int)treeRangeMaxBox.Value, average);
+            }
+
+            UpdateImage(f.ToImage());
+            SetLabelText(burningLabel, f.burningCells.Count);
+            SetLabelText(tickLabel, tickIndex);
+            UpdatePlot();
+
+            SetButtonState(resetButton, true);
+            SetButtonState(pauseButton, false);
+        }
+
+        private void RunSimulation()
+        {
             f.StartFire();
 
             while (f.burning)
@@ -90,19 +172,6 @@ namespace FireSpread
                     SetLabelText(tickLabel, tickIndex);
                 }
             }
-
-            AddDatapoint(0);
-
-            UpdateImage(f.ToImage());
-            SetLabelText(burningLabel, f.burningCells.Count);
-            SetLabelText(tickLabel, tickIndex);
-            UpdatePlot();
-
-            if (outputFileBox.Checked)
-                WriteDataToFile(currentWaterbody, GetDataFromGraph());
-
-            SetButtonState(resetButton, true);
-            SetButtonState(pauseButton, false);
         }
 
         private void WriteDataToFile(string filename, int[] data)
@@ -132,14 +201,8 @@ namespace FireSpread
                     series.Add(line.Split(','));
                 }
 
-                Debug.WriteLine("------");
-                Debug.WriteLine(series[0].Length);
-                Debug.WriteLine(data.Length);
-                Debug.WriteLine("------");
-
                 if (data.Length > series[0].Length)
                 {
-                    Debug.WriteLine("Adding to series: " + (data.Length - series[0].Length));
                     for (int x = 0; x < series.Count; x++)
                     {
                         for (int i = 0; i < data.Length - series[0].Length; i++)
@@ -152,7 +215,6 @@ namespace FireSpread
                 }
                 else if (series[0].Length > data.Length)
                 {
-                    Debug.WriteLine("Adding to data: " + (series[0].Length - data.Length));
                     List<int> _data = data.ToList();
 
                     for (int i = 0; i < series[0].Length - data.Length; i++)
@@ -189,16 +251,18 @@ namespace FireSpread
             label.Update();
         }
 
-        private void AddDatapoint(int amount)
+        private void AddDatapoint(int amount, int index = -1)
         {
+            if (index == -1) index = tickIndex;
+
             if (InvokeRequired)
             {
-                try { this.Invoke(new Action<int>(AddDatapoint), new object[] { amount }); }
+                try { this.Invoke(new Action<int, int>(AddDatapoint), new object[] { amount, index }); }
                 catch { }
                 return;
             }
 
-            (model.Series[0] as LineSeries).Points.Add(new DataPoint(tickIndex, amount));
+            (model.Series[0] as LineSeries).Points.Add(new DataPoint(index, amount));
             tickIndex++;
         }
 
@@ -303,6 +367,41 @@ namespace FireSpread
 
             currentWaterbody = waterBodyDropdown.SelectedItem.ToString();
         }
+
+        private void treeRangeMaxBox_ValueChanged(object sender, EventArgs e)
+        {
+            if (treeRangeMaxBox.Value < treeRangeMinBox.Value)
+                treeRangeMinBox.Value = treeRangeMaxBox.Value;
+
+            AdjustRunsToDensityRange();
+        }
+
+        private void treeRangeMinBox_ValueChanged(object sender, EventArgs e)
+        {
+            if (treeRangeMinBox.Value > treeRangeMaxBox.Value)
+                treeRangeMaxBox.Value = treeRangeMinBox.Value;
+
+            AdjustRunsToDensityRange();
+        }
+
+        private void AdjustRunsToDensityRange()
+        {
+            int diff = (int)treeRangeMaxBox.Value - (int)treeRangeMinBox.Value;
+            if (runsAmountBox.Value < diff)
+                runsAmountBox.Value = diff;
+
+            if (runsAmountBox.Value % diff != 0)
+                runsAmountBox.Value -= runsAmountBox.Value % diff;
+
+            runsAmountBox.Increment = diff;
+
+            runsPerDensityLabel.Text = ((int)runsAmountBox.Value / diff).ToString();
+        }
+
+        private void runsAmountBox_ValueChanged(object sender, EventArgs e)
+        {
+            AdjustRunsToDensityRange();
+        }
     }
 
     public class Forest
@@ -356,7 +455,7 @@ namespace FireSpread
             }
             else
             {
-                Debug.WriteLine("Setting left side on fire");
+                //Debug.WriteLine("Setting left side on fire");
                 for (int y = 0; y < height; y++)
                 {
                     Cell c = cells[0, y];

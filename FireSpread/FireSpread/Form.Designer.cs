@@ -50,11 +50,23 @@
             this.outputFileBox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tickLabel = new System.Windows.Forms.Label();
+            this.runMultipleBox = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.treeRangeMinBox = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
+            this.treeRangeMaxBox = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
+            this.runsAmountBox = new System.Windows.Forms.NumericUpDown();
+            this.label9 = new System.Windows.Forms.Label();
+            this.runsPerDensityLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.fireBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.treeChanceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.burstChanceBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeRangeMinBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeRangeMaxBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.runsAmountBox)).BeginInit();
             this.SuspendLayout();
             // 
             // fireBox
@@ -144,9 +156,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(518, 100);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(74, 15);
+            this.label2.Size = new System.Drawing.Size(73, 15);
             this.label2.TabIndex = 9;
-            this.label2.Text = "Tree Chance:";
+            this.label2.Text = "Tree Density:";
             // 
             // label3
             // 
@@ -274,11 +286,124 @@
             this.tickLabel.TabIndex = 21;
             this.tickLabel.Text = "0";
             // 
+            // runMultipleBox
+            // 
+            this.runMultipleBox.AutoSize = true;
+            this.runMultipleBox.Location = new System.Drawing.Point(246, 307);
+            this.runMultipleBox.Name = "runMultipleBox";
+            this.runMultipleBox.Size = new System.Drawing.Size(186, 19);
+            this.runMultipleBox.TabIndex = 22;
+            this.runMultipleBox.Text = "Run multiple (returns average)";
+            this.runMultipleBox.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(246, 373);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(105, 15);
+            this.label6.TabIndex = 23;
+            this.label6.Text = "Tree density range:";
+            // 
+            // treeRangeMinBox
+            // 
+            this.treeRangeMinBox.Location = new System.Drawing.Point(246, 391);
+            this.treeRangeMinBox.Name = "treeRangeMinBox";
+            this.treeRangeMinBox.Size = new System.Drawing.Size(61, 23);
+            this.treeRangeMinBox.TabIndex = 24;
+            this.treeRangeMinBox.Value = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.treeRangeMinBox.ValueChanged += new System.EventHandler(this.treeRangeMinBox_ValueChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(313, 393);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(18, 15);
+            this.label7.TabIndex = 25;
+            this.label7.Text = "to";
+            // 
+            // treeRangeMaxBox
+            // 
+            this.treeRangeMaxBox.Location = new System.Drawing.Point(337, 391);
+            this.treeRangeMaxBox.Name = "treeRangeMaxBox";
+            this.treeRangeMaxBox.Size = new System.Drawing.Size(61, 23);
+            this.treeRangeMaxBox.TabIndex = 26;
+            this.treeRangeMaxBox.Value = new decimal(new int[] {
+            80,
+            0,
+            0,
+            0});
+            this.treeRangeMaxBox.ValueChanged += new System.EventHandler(this.treeRangeMaxBox_ValueChanged);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(246, 329);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(36, 15);
+            this.label8.TabIndex = 27;
+            this.label8.Text = "Runs:";
+            // 
+            // runsAmountBox
+            // 
+            this.runsAmountBox.Location = new System.Drawing.Point(246, 347);
+            this.runsAmountBox.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.runsAmountBox.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.runsAmountBox.Name = "runsAmountBox";
+            this.runsAmountBox.Size = new System.Drawing.Size(61, 23);
+            this.runsAmountBox.TabIndex = 28;
+            this.runsAmountBox.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.runsAmountBox.ValueChanged += new System.EventHandler(this.runsAmountBox_ValueChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(246, 421);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(97, 15);
+            this.label9.TabIndex = 29;
+            this.label9.Text = "Runs per density:";
+            // 
+            // runsPerDensityLabel
+            // 
+            this.runsPerDensityLabel.AutoSize = true;
+            this.runsPerDensityLabel.Location = new System.Drawing.Point(393, 422);
+            this.runsPerDensityLabel.Name = "runsPerDensityLabel";
+            this.runsPerDensityLabel.Size = new System.Drawing.Size(13, 15);
+            this.runsPerDensityLabel.TabIndex = 30;
+            this.runsPerDensityLabel.Text = "0";
+            // 
             // Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1258, 468);
+            this.Controls.Add(this.runsPerDensityLabel);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.runsAmountBox);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.treeRangeMaxBox);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.treeRangeMinBox);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.runMultipleBox);
             this.Controls.Add(this.tickLabel);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.outputFileBox);
@@ -309,6 +434,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.burstChanceBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeRangeMinBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeRangeMaxBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.runsAmountBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -337,5 +465,14 @@
         private CheckBox outputFileBox;
         private Label label5;
         private Label tickLabel;
+        private CheckBox runMultipleBox;
+        private Label label6;
+        private NumericUpDown treeRangeMinBox;
+        private Label label7;
+        private NumericUpDown treeRangeMaxBox;
+        private Label label8;
+        private NumericUpDown runsAmountBox;
+        private Label label9;
+        private Label runsPerDensityLabel;
     }
 }
