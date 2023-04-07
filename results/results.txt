@@ -1,0 +1,16 @@
+Steady fire value: 140
+
+NAME			LOWEST	RECOVERY PERIOD 	DROPOFF (%) AND RECOVERY TIME (ticks) -- HIGHER IS BETTER
+
+Alternating		116	325-402			D: 17.14%	R:  77t
+Alternating + canal	106	362-500			D: 24.29%	R: 128t
+Canal + alternating	103	319-449			D: 26.43%	R: 130t
+
+Double 5m s10		88	312-495			D: 37.15%	R: 183t
+Double 5m s20		94	326-473			D: 32.86%	R: 111t
+Double 10m s10		86	315-505			D: 38.57%	R: 190t
+Double 10m s30		98	336-459			D: 30.00%	R: 123t
+
+Single 5m		107	300-405			D: 23.57%	R: 105t
+Single 10m		105	296-409			D: 25.00%	R: 113t
+Single 50m		92	310-449			D: 34.29%	R: 139t
