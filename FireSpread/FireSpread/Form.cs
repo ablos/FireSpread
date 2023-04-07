@@ -71,11 +71,15 @@ namespace FireSpread
 
             if (!runMultipleBox.Checked)
             {
+                Debug.WriteLine("Running once...");
+
                 RunSimulation();
                 AddDatapoint(0);
 
                 if (outputFileBox.Checked)
                     WriteDataToFile(currentWaterbody, GetDataFromGraph());
+
+                Debug.WriteLine("Done.");
             }
             else
             {
@@ -124,7 +128,7 @@ namespace FireSpread
 
                     currentDensity++;
 
-                    Debug.WriteLine("Done. (" + (((float)i + 1f) / ((float)totalRuns / (float)runsPerDensity) * 100f) + "% completed)");
+                    Debug.WriteLine("Done. (" + (int)(((float)i + 1f) / ((float)totalRuns / (float)runsPerDensity) * 100f) + "% completed)");
                 }
 
                 (model.Series[0] as LineSeries).Points.Clear();
